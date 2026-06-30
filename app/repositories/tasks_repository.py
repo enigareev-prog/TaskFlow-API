@@ -18,3 +18,11 @@ def create_task(title: str):
     next_task_id += 1
 
     return task
+
+
+def get_task_by_id(task_id: int):
+    for task in tasks:
+        if task["id"] == task_id:
+            return task
+        
+    return None

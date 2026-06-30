@@ -1,7 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from app.services.tasks_service import create_task, get_all_tasks
+from app.services.tasks_service import (
+    create_task,
+    get_all_tasks,
+    get_task_by_id
+)
 
 router = APIRouter(
     prefix="/tasks",
@@ -24,3 +28,13 @@ def get_tasks():
 @router.post("")
 def create_task_endpoint(task_data: TaskCreate):
     return create_task(title=task_data.title)
+
+
+@router.get("/{task_id}")
+def get_task(task_id: int):
+    task = get_task_by_id(task_id)
+
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    return task
