@@ -26,3 +26,22 @@ def get_task_by_id(task_id: int):
             return task
         
     return None
+
+
+def update_task_title(task_id: int, title: str):
+    task = get_task_by_id(task_id)
+
+    if task is None:
+        return None
+    
+    task["title"] = title
+
+    return task
+
+
+def delete_task_by_id(task_id: int):
+    for index, task in enumerate(tasks):
+        if task["id"] == task_id:
+            return tasks.pop(index)
+        
+    return None
