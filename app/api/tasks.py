@@ -70,5 +70,4 @@ def delete_task(task_id: int):
     return {
         "message": "Task deleted successfully",
         "deleted_task": deleted_task,
-        "tasks": get_all_tasks(),
     }
