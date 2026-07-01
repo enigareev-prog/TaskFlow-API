@@ -1,37 +1,27 @@
-from webbrowser import get
-
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
 
 from app.services.tasks_service import (
     create_task,
     get_all_tasks,
     get_task_by_id,
-    update_task_title,
+    update_task,
     delete_task_by_id,
 )
+from app.schemas.tasks import TaskCreate, TaskUpdate
 
 router = APIRouter(
     prefix="/tasks",
     tags=["tasks"],
 )
 
-tasks = []
-next_task_id = 1
-
-
-class TaskCreate(BaseModel):
-    title: str
-
-class TaskUpdate(BaseModel):
-    title: str
-
 
 @router.patch("/{task_id}")
-def update_task(task_id: int, task_data: TaskUpdate):
-    task = update_task_title(
+def update_task_endpoint(task_id: int, task_data: TaskUpdate):
+    update_data = task_data.model_dump(exclude_unset=True)
+    
+    task = update_task(
         task_id=task_id,
-        title=task_data.title,
+        update_data=update_data,
     )
 
     if task is None:
@@ -47,7 +37,11 @@ def get_tasks():
 
 @router.post("")
 def create_task_endpoint(task_data: TaskCreate):
-    return create_task(title=task_data.title)
+    return create_task(
+        title=task_data.title,
+        description=task_data.description,
+        priority=task_data.priority,    
+    )
 
 
 @router.get("/{task_id}")

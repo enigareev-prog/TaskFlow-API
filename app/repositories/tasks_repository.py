@@ -6,12 +6,15 @@ def get_all_tasks():
     return tasks
 
 
-def create_task(title: str):
+def create_task(title: str, description: str | None = None, priority: str = "medium"):
     global next_task_id 
 
     task = {
         "id": next_task_id,
-        "title": title
+        "title": title,
+        "description": description,
+        "status": "todo",
+        "priority": priority,
     }
 
     tasks.append(task)
@@ -28,13 +31,14 @@ def get_task_by_id(task_id: int):
     return None
 
 
-def update_task_title(task_id: int, title: str):
+def update_task(task_id: int, update_data: dict):
     task = get_task_by_id(task_id)
 
     if task is None:
         return None
     
-    task["title"] = title
+    for key, value in update_data.items():
+        task[key] = value
 
     return task
 
