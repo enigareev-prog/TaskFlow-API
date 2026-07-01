@@ -1,3 +1,6 @@
+from datetime import datetime, timezone
+
+
 tasks = []
 next_task_id = 1
 
@@ -9,12 +12,16 @@ def get_all_tasks():
 def create_task(title: str, description: str | None = None, priority: str = "medium"):
     global next_task_id 
 
+    now = datetime.now(timezone.utc)
+
     task = {
         "id": next_task_id,
         "title": title,
         "description": description,
         "status": "todo",
         "priority": priority,
+        "created_at": now,
+        "updated_at": now,
     }
 
     tasks.append(task)
@@ -39,6 +46,8 @@ def update_task(task_id: int, update_data: dict):
     
     for key, value in update_data.items():
         task[key] = value
+
+    task["updated_at"] = datetime.now(timezone.utc)
 
     return task
 

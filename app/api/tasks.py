@@ -35,7 +35,17 @@ def get_tasks():
     return get_all_tasks()
 
 
-@router.post("")
+@router.post(
+        "",
+        summary="Create task",
+        description=(
+            "Creates a new task. "
+            "The client must provide title. "
+            "Description is optional. "
+            "Priority must be one of: 'low', 'medium', 'high'. "
+            "The system automatically sets id, status, created_at and updated_at."
+        )
+)
 def create_task_endpoint(task_data: TaskCreate):
     return create_task(
         title=task_data.title,
