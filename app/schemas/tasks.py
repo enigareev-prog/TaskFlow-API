@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 from app.schemas.task_enums import TaskPriority, TaskStatus
 
 
@@ -13,3 +14,13 @@ class TaskUpdate(BaseModel):
     description: str | None = None
     priority: TaskPriority | None = None
     status: TaskStatus | None = None
+
+
+class TaskResponse(BaseModel):
+    id: int
+    title: str
+    description: str | None
+    priority: TaskPriority
+    status: TaskStatus
+    created_at: datetime
+    updated_at: datetime

@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from app.models.task import Task
 
 
 tasks = []
@@ -14,15 +15,15 @@ def create_task(title: str, description: str | None = None, priority: str = "med
 
     now = datetime.now(timezone.utc)
 
-    task = {
-        "id": next_task_id,
-        "title": title,
-        "description": description,
-        "status": "todo",
-        "priority": priority,
-        "created_at": now,
-        "updated_at": now,
-    }
+    task = Task(
+        id=next_task_id,
+        title=title,
+        description=description,
+        status="todo",
+        priority=priority,
+        created_at=now,
+        updated_at=now,
+    )
 
     tasks.append(task)
     next_task_id += 1
@@ -32,7 +33,7 @@ def create_task(title: str, description: str | None = None, priority: str = "med
 
 def get_task_by_id(task_id: int):
     for task in tasks:
-        if task["id"] == task_id:
+        if task.id == task_id:
             return task
         
     return None
@@ -44,17 +45,14 @@ def update_task(task_id: int, update_data: dict):
     if task is None:
         return None
     
-    for key, value in update_data.items():
-        task[key] = value
-
-    task["updated_at"] = datetime.now(timezone.utc)
+    task.update(update_data)
 
     return task
 
 
 def delete_task_by_id(task_id: int):
     for index, task in enumerate(tasks):
-        if task["id"] == task_id:
+        if task.id == task_id:
             return tasks.pop(index)
         
     return None
