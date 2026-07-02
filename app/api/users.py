@@ -1,10 +1,12 @@
 from fastapi import APIRouter, HTTPException
 
-from app.schemas.users import UserCreate, UserResponse
+from app.schemas.users import UserCreate, UserLogin, UserResponse
 from app.services.users_service import (
     register_user, 
     get_all_users, 
     get_user_by_id,
+    register_user,
+    login_user,
 )
 
 router = APIRouter(
@@ -40,5 +42,18 @@ def get_user(user_id: int):
 
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    return user
+
+
+@router.post("/login", response_model=UserResponse)
+def login_user_endpoint(user_data: UserLogin):
+    user = login_user(
+        email=user_data.email,
+        password=user_data.password,
+    )
+
+    if user is None:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
     
     return user

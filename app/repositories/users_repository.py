@@ -52,4 +52,6 @@ def create_user(
     users.append(user)
     next_user_id += 1
 
+    print(hashed_password)
+
     return user

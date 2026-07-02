@@ -18,3 +18,8 @@ class UserResponse(BaseModel):
     date_of_birth: date | None
     created_at: datetime
     updated_at: datetime
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str

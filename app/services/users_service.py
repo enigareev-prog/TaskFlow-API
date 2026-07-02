@@ -1,3 +1,6 @@
+import bcrypt
+
+
 from app.repositories.users_repository import (
     create_user,
     get_all_users,
@@ -6,8 +9,15 @@ from app.repositories.users_repository import (
 )
 
 
-def hash_password(password: str):
-    return f"hashed_{password}"
+def hash_password(password: str) -> str:
+    password_bytes = password.encode('utf-8')
+
+    hashed = bcrypt.hashpw(
+        password_bytes,
+        bcrypt.gensalt()
+    )
+
+    return hashed.decode("utf-8")
 
 
 def register_user(
@@ -31,3 +41,22 @@ def register_user(
         hashed_password=hashed_password,
         date_of_birth=date_of_birth,
     )
+
+
+def check_password(password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(
+        password.encode("utf-8"),
+        hashed_password.encode("utf-8")
+    )
+
+
+def login_user(email: str, password: str):
+    user = get_user_by_email(email)
+
+    if user is None:
+        return None
+    
+    if not check_password(password, user.hashed_password):
+        return None
+    
+    return user
