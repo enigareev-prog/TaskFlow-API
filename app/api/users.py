@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.schemas.users import UserCreate, UserLogin, UserResponse
+from app.schemas.auth import TokenResponse
 from app.services.users_service import (
     register_user, 
     get_all_users, 
@@ -8,6 +9,7 @@ from app.services.users_service import (
     register_user,
     login_user,
 )
+from app.dependencies.auth import get_current_user
 
 router = APIRouter(
     prefix="/users",
@@ -36,6 +38,11 @@ def get_users():
     return get_all_users()
 
 
+@router.get("/me", response_model=UserResponse)
+def get_me(current_user=Depends(get_current_user)):
+    return current_user
+
+
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(user_id: int):
     user = get_user_by_id(user_id)
@@ -46,7 +53,7 @@ def get_user(user_id: int):
     return user
 
 
-@router.post("/login", response_model=UserResponse)
+@router.post("/login", response_model=TokenResponse)
 def login_user_endpoint(user_data: UserLogin):
     user = login_user(
         email=user_data.email,

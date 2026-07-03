@@ -7,6 +7,7 @@ from app.repositories.users_repository import (
     get_user_by_id,
     get_user_by_email,
 )
+from app.core.security import create_access_token
 
 
 def hash_password(password: str) -> str:
@@ -59,4 +60,11 @@ def login_user(email: str, password: str):
     if not check_password(password, user.hashed_password):
         return None
     
-    return user
+    access_token = create_access_token(
+        data={"user_id": user.id}
+    )
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
